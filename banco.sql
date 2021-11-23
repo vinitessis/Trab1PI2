@@ -28,9 +28,9 @@ CREATE TABLE emprestimo (
 
 CREATE TABLE devolucao (
 	id SERIAL NOT NULL,
-	id_emprestimo INT NOT NULL,
+	id_livro INT NOT NULL,
 	PRIMARY KEY (id),
-	FOREIGN KEY (id_emprestimo) REFERENCES emprestimo (id)
+	FOREIGN KEY (id_livro) REFERENCES livro (id)
 )
 
 CREATE TABLE associado (

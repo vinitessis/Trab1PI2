@@ -29,7 +29,7 @@ exports.buscarPorId = (req, res) => {
 
 exports.inserirDevolucao = (req, res) => {
     let devolucao = req.body;
-    if(devolucao && devolucao.id_emprestimo) {
+    if(devolucao && devolucao.id_livro) {
         devolucaoRepository.inserir (devolucao, (err, devolucaoInserido) => {
             if (err) {
                 res.status(500).json({msg: err.msg});

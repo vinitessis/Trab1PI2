@@ -26,30 +26,31 @@ exports.inserir = async (emprestimo, callback) => {
     try{
         await cliente.connect();
 
-        //const sqlLivroEstaDisponivel = "SELECT * FROM livro WHERE id=$1 AND disponivel='n'";
-        //const codigoLivro = [emprestimo.id_livro];
-        //const resLivroDisponivel = await cliente.query(sqlLivroEstaDisponivel, codigoLivro);
-        //if (resLivroDisponivel.rows !== undefined || resLivroDisponivel.rows.length > 0) {
-            //throw new Error("Livro não disponível");
-            //callback({"msg": "Deu ruim"});
-        //}
-        //else {
-        //}
-        const res = await cliente.query(sql, values);
-        
-        if (res.rows && res.rows.length > 0) {
-            const sqlDisponibilidadeLivro = "UPDATE livro SET disponivel='n' WHERE id=$1 RETURNING *";
-            const valuesDisponibilidadeLivro = [emprestimo.id_livro];
-            await cliente.query(sqlDisponibilidadeLivro, valuesDisponibilidadeLivro);
-        };
-
-        callback(null, res.rows[0]);
+        const sqlDisponibilidadeLivro = "SELECT * FROM livro WHERE id=$1 AND disponivel='n'";
+        const valueDisponibilidadeLivro = [emprestimo.id_livro];
+        const resDisponibilidadeLivro = await cliente.query(sqlDisponibilidadeLivro, valueDisponibilidadeLivro);
+        if (resDisponibilidadeLivro.rows && resDisponibilidadeLivro.rows.length > 0) {
+            const erro = "TOPZERA!";
+            callback(erro, null);
+        }
+        else {
+            const res = await cliente.query(sql, values);
+            
+            if (res.rows && res.rows.length > 0) {
+                const sqlTrocaDisponivel = "UPDATE livro SET disponivel='n' WHERE id=$1 RETURNING *";
+                const valuesTrocaDisponivel = [emprestimo.id_livro];
+                await cliente.query(sqlTrocaDisponivel, valuesTrocaDisponivel);
+            };
+    
+            callback(null, res.rows[0]);
+        }
     } catch(err) {
         const erro = "Erro ao tentar inserir empréstimo!";
         callback(erro, null);
     } finally {
         await cliente.end();
     }
+
 }
 
 exports.buscarPorId = (id, callback) => {

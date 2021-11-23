@@ -70,7 +70,17 @@ exports.deletar = (id, callback) => {
     const cliente = new Client(conexao);
     cliente.connect();
     cliente.query(sql, values, (err, res) => {
-        callback(err, res.rows[0]);
+        if (err) {
+            const error = "ID de associado inválido!"
+            callback(error, null);
+        }
+        else if (res.rows && res.rows.length > 0) {
+            callback(null, res.rows[0]);
+        }
+        else {
+           const error = "Associado não encontrado!";
+           callback(error, null);
+        }
         cliente.end();
     });
 }

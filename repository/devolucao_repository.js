@@ -19,27 +19,18 @@ exports.listar = (callback) => {
 }
 
 exports.inserir = async (devolucao, callback) => {
-    const sql = "INSERT INTO devolucao (id_emprestimo) VALUES ($1) RETURNING *";
-    const values = [devolucao.id_emprestimo];
+    const sql = "INSERT INTO devolucao (id_livro, id_emprestimo) VALUES ($1, $2) RETURNING *";
+    const values = [devolucao.id_livro, devolucao.id_emprestimo];
     const cliente = new Client(conexao);
 
     try{
         await cliente.connect();
 
-        //const sqlLivroEstaDisponivel = "SELECT * FROM livro WHERE id=$1 AND disponivel='n'";
-        //const codigoLivro = [emprestimo.id_livro];
-        //const resLivroDisponivel = await cliente.query(sqlLivroEstaDisponivel, codigoLivro);
-        //if (resLivroDisponivel.rows !== undefined || resLivroDisponivel.rows.length > 0) {
-            //throw new Error("Livro não disponível");
-            //callback({"msg": "Deu ruim"});
-        //}
-        //else {
-        //}
         const res = await cliente.query(sql, values);
         
         if (res.rows && res.rows.length > 0) {
             const sqlDisponibilidadeLivro = "UPDATE livro SET disponivel='s' WHERE id=$1 RETURNING *";
-            const valuesDisponibilidadeLivro = [devolucao.id_emprestimo];
+            const valuesDisponibilidadeLivro = [devolucao.id_livro];
             await cliente.query(sqlDisponibilidadeLivro, valuesDisponibilidadeLivro);
         };
 
@@ -74,8 +65,8 @@ exports.buscarPorId = (id, callback) => {
 }
 
 exports.atualizar = (id, devolucao, callback) => {
-    const sql = "UPDATE devolucao SET id_emprestimo=$1 WHERE id=$2 RETURNING *";
-    const values = [devolucao.id_emprestimo, id];
+    const sql = "UPDATE devolucao SET id_livro=$1, id_emprestimo=$2 WHERE id=$3 RETURNING *";
+    const values = [devolucao.id_livro, devolucao.id_emprestimo, id];
 
     const cliente = new Client(conexao);
     cliente.connect();

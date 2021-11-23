@@ -70,7 +70,17 @@ exports.deletar = (id, callback) => {
     const cliente = new Client(conexao);
     cliente.connect();
     cliente.query(sql, values, (err, res) => {
-        callback(err, res.rows[0]);
+        if (err) {
+            const error = "ID de autor inválido!"
+            callback(error, null);
+        }
+        else if (res.rows && res.rows.length > 0) {
+            callback(null, res.rows[0]);
+        }
+        else {
+           const error = "Autor não encontrado!";
+           callback(error, null);
+        }
         cliente.end();
     });
 }
