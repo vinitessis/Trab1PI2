@@ -30,7 +30,7 @@ exports.inserir = async (emprestimo, callback) => {
         const valueDisponibilidadeLivro = [emprestimo.id_livro];
         const resDisponibilidadeLivro = await cliente.query(sqlDisponibilidadeLivro, valueDisponibilidadeLivro);
         if (resDisponibilidadeLivro.rows && resDisponibilidadeLivro.rows.length > 0) {
-            const erro = "TOPZERA!";
+            const erro = {msg:"Item indisponível para empréstimo!"};
             callback(erro, null);
         }
         else {

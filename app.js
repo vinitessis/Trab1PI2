@@ -1,6 +1,9 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const porta = 3000;
+
+app.use(cors());
 
 app.use(express.json()); //Trata o body do request como JSON
 app.use(express.urlencoded({extended: true}));
